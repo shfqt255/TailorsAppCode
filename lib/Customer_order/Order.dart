@@ -564,7 +564,7 @@ class orderState extends State<OrderPage> {
                                         children: [
                                           Expanded(
                                             child: Text(
-                                              "Name: $customerName",
+                                              "$customerName",
                                               style: TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold,

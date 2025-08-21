@@ -184,7 +184,7 @@ class ToDoListState extends State<ToDoList> {
       appBar: AppBar(
         title: Text('Tasks List',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: Colors.blueGrey,
         foregroundColor: Colors.white,
         actions: [
           TextButton(
@@ -233,7 +233,7 @@ class ToDoListState extends State<ToDoList> {
                 return Card(
                   margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   // shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(10)),
-                  color: Colors.lightBlue,
+                  color: Colors.blueGrey,
                   child: Padding(
                     padding: EdgeInsets.only(top: 5, left: 10),
                     child: Column(

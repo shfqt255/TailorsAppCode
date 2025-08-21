@@ -133,7 +133,6 @@ class OrderViewState extends State<OrderView> {
                 stream: FirebaseFirestore.instance
                     .collection('Customer')
                     .doc(widget.CustomerID)
-                    .collection('Measurements')
                     .snapshots(),
                 builder: (context, Snapshot) {
                   if (Snapshot.hasError) {
@@ -149,75 +148,77 @@ class OrderViewState extends State<OrderView> {
                       child: Text('No Customer Found'),
                     );
                   }
-                  final Mdata = Snapshot.data!.docs;
+                  // final Mdata = Snapshot.data.
 
-                  return Column(
-                    children: Mdata.map((doc) {
-                      final Mapdata = doc.data() as Map<String, dynamic>;
+                  // return Column(
+                  //   children: Mdata.map((doc) {
+                  //     final Mapdata = doc.data() as Map<String, dynamic>;
+                  final Mapdata = Snapshot.data!.data() as Map<String, dynamic>;
 
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Measurements: ',
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.lightBlue),
+                        ),
+                        Table(
+                          border: TableBorder.all(),
                           children: [
-                            Text(
-                              'Measurements: ',
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.lightBlue),
+                            buildMeasurementsAndDetails(
+                              'Qameez Length',
+                              (Mapdata['qameezLength'] ?? '').toString(),
                             ),
-                            Table(
-                              border: TableBorder.all(),
-                              children: [
-                                buildMeasurementsAndDetails(
-                                  'Qameez Length',
-                                  (Mapdata['qameezLength'] ?? '').toString(),
-                                ),
-                                buildMeasurementsAndDetails(
-                                  'Arm Length',
-                                  (Mapdata['ArmLength'] ?? '').toString(),
-                                ),
-                                buildMeasurementsAndDetails('Cuff/Round Sleeve',
-                                    (Mapdata['CuffLength'] ?? '').toString()),
-                                buildMeasurementsAndDetails('Cuff Width',
-                                    (Mapdata['CuffWidth'] ?? '').toString()),
-                                buildMeasurementsAndDetails('Shoulder Length',
-                                    (Mapdata['ShoulderLength'] ?? '').toString()),
-                                buildMeasurementsAndDetails('Neck/Collar',
-                                    (Mapdata['Neck/CollarLength'] ?? '').toString()),
-                                buildMeasurementsAndDetails('Chest Length',
-                                    (Mapdata['ChestLength'] ?? '').toString()),
-                                buildMeasurementsAndDetails('Waist Length',
-                                    (Mapdata['WaistLength'] ?? '').toString()),
-                                buildMeasurementsAndDetails('Hem/ Daman',
-                                    (Mapdata['HemLength'] ?? '').toString()),
-                                buildMeasurementsAndDetails('Shalwar Length',
-                                    (Mapdata['ShalwarLength'] ?? '').toString()),
-                                buildMeasurementsAndDetails('Pancha',
-                                    (Mapdata['PanchaLength'] ?? '').toString()),
-                                buildMeasurementsAndDetails('FronPocket',
-                                    (Mapdata['FrontPocket'] ?? '').toString()),
-                                buildMeasurementsAndDetails('Side Pockets',
-                                    (Mapdata['Side Pockets'] ?? '').toString()),
-                                buildMeasurementsAndDetails(
-                                    'Galla', (Mapdata['GallaType'] ?? '').toString()),
-                                buildMeasurementsAndDetails('Sleeve Type',
-                                    (Mapdata['SleeveType'] ?? '').toString()),
-                                buildMeasurementsAndDetails(
-                                    'Hem Type', (Mapdata['HemType'] ?? '').toString()),
-                                buildMeasurementsAndDetails(
-                                    'Additional Information',
-                                    (Mapdata['Additional Information'] ?? '')
-                                        .toString()),
-                              ],
+                            buildMeasurementsAndDetails(
+                              'Arm Length',
+                              (Mapdata['ArmLength'] ?? '').toString(),
                             ),
+                            buildMeasurementsAndDetails('Cuff/Round Sleeve',
+                                (Mapdata['CuffLength'] ?? '').toString()),
+                            buildMeasurementsAndDetails('Cuff Width',
+                                (Mapdata['CuffWidth'] ?? '').toString()),
+                            buildMeasurementsAndDetails('Shoulder Length',
+                                (Mapdata['ShoulderLength'] ?? '').toString()),
+                            buildMeasurementsAndDetails(
+                                'Neck/Collar',
+                                (Mapdata['Neck_CollarLength'] ?? '')
+                                    .toString()),
+                            buildMeasurementsAndDetails('Chest Length',
+                                (Mapdata['ChestLength'] ?? '').toString()),
+                            buildMeasurementsAndDetails('Waist Length',
+                                (Mapdata['WaistLength'] ?? '').toString()),
+                            buildMeasurementsAndDetails('Hem/ Daman',
+                                (Mapdata['HemLength'] ?? '').toString()),
+                            buildMeasurementsAndDetails('Shalwar Length',
+                                (Mapdata['ShalwarLength'] ?? '').toString()),
+                            buildMeasurementsAndDetails('Pancha',
+                                (Mapdata['PanchaLength'] ?? '').toString()),
+                            buildMeasurementsAndDetails('FronPocket',
+                                (Mapdata['FrontPocket'] ?? '').toString()),
+                            buildMeasurementsAndDetails('Side Pockets',
+                                (Mapdata['Side Pockets'] ?? '').toString()),
+                            buildMeasurementsAndDetails('Galla',
+                                (Mapdata['GallaType'] ?? '').toString()),
+                            buildMeasurementsAndDetails('Sleeve Type',
+                                (Mapdata['SleeveType'] ?? '').toString()),
+                            buildMeasurementsAndDetails('Hem Type',
+                                (Mapdata['HemType'] ?? '').toString()),
+                            buildMeasurementsAndDetails(
+                                'Additional Information',
+                                (Mapdata['Additional Information'] ?? '')
+                                    .toString()),
                           ],
                         ),
-                      );
-                    }).toList(),
+                      ],
+                    ),
                   );
                 }),
+
             // FIXED: Use doc() instead of snapshots() to get specific order
             StreamBuilder<DocumentSnapshot>(
               stream: FirebaseFirestore.instance
@@ -235,40 +236,48 @@ class OrderViewState extends State<OrderView> {
                     child: CircularProgressIndicator(),
                   );
                 }
-                if (!snapshot.hasData || snapshot.data == null || !snapshot.data!.exists) {
+                if (!snapshot.hasData ||
+                    snapshot.data == null ||
+                    !snapshot.data!.exists) {
                   return Center(
                     child: Text('No Order Found'),
                   );
                 }
                 final data = snapshot.data!.data() as Map<String, dynamic>;
-                
+
                 return Padding(
-                  padding: EdgeInsets.all(8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Order Details: ',
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.lightBlue),
-                      ),
-                      Table(
-                        border: TableBorder.all(),
-                        children: [
-                          buildMeasurementsAndDetails('No.Suits', (data['NumberOfSuits'] ?? '').toString()),
-                          buildMeasurementsAndDetails('Delivery Date', (data['DeliveryDate'] ?? '').toString()),
-                          buildMeasurementsAndDetails('Urgent', (data['Urgent'] ?? '').toString()),
-                          buildMeasurementsAndDetails('AmountPerSuit', (data['PerSuitAmount'] ?? '').toString()),
-                          buildMeasurementsAndDetails('Total Amount', (data['Total Amount'] ?? '').toString()),
-                          buildMeasurementsAndDetails('Advance Amount', (data['Advance Amount'] ?? '').toString()),
-                          buildMeasurementsAndDetails('Remaining Amount', (data['Remaining Amount'] ?? '').toString()),
-                        ],
-                      )
-                    ],
-                  )
-                );
+                    padding: EdgeInsets.all(8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Order Details: ',
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.lightBlue),
+                        ),
+                        Table(
+                          border: TableBorder.all(),
+                          children: [
+                            buildMeasurementsAndDetails('No.Suits',
+                                (data['NumberOfSuits'] ?? '').toString()),
+                            buildMeasurementsAndDetails('Delivery Date',
+                                (data['DeliveryDate'] ?? '').toString()),
+                            buildMeasurementsAndDetails(
+                                'Urgent', (data['Urgent'] ?? '').toString()),
+                            buildMeasurementsAndDetails('AmountPerSuit',
+                                (data['PerSuitAmount'] ?? '').toString()),
+                            buildMeasurementsAndDetails('Total Amount',
+                                (data['Total Amount'] ?? '').toString()),
+                            buildMeasurementsAndDetails('Advance Amount',
+                                (data['Advance Amount'] ?? '').toString()),
+                            buildMeasurementsAndDetails('Remaining Amount',
+                                (data['Remaining Amount'] ?? '').toString()),
+                          ],
+                        )
+                      ],
+                    ));
               },
             )
           ],

@@ -3,8 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class AddNewCustomer extends StatefulWidget {
-  final String? customerId; // optional
-  const AddNewCustomer({Key? key, this.customerId}) : super(key: key);
+  final String? customerId;
+  String? OrderId; // optional
+  AddNewCustomer({super.key, this.customerId, this.OrderId});
   @override
   State<AddNewCustomer> createState() => _AddNewCustomerState();
 }
@@ -51,33 +52,76 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
     'NONE',
   ];
   String? selectedSidePockets;
-
-  CollectionReference Customer =
-      FirebaseFirestore.instance.collection('Customer');
-
   bool isEditMode = false;
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    if (widget.customerId != null) {
+    if (widget.customerId != null || widget.OrderId != null) {
       isEditMode = true;
-      _loadData();
+      loadCustomerData();
     } else {
       isLoading = false;
     }
   }
 
-  Future<void> _loadData() async {
+  // Future<void> _loadData() async {
+  //   try {
+  //     await Future.wait([loadCustomerData(), loadMeasurements()]);
+  //   } catch (e) {
+  //     Fluttertoast.showToast(
+  //       msg: 'Error loading data: $e',
+  //       backgroundColor: Colors.red,
+  //       textColor: Colors.white,
+  //     );
+  //   } finally {
+  //     setState(() {
+  //       isLoading = false;
+  //     });
+  //   }
+  // }
+  CollectionReference Customer =
+      FirebaseFirestore.instance.collection('Customer');
+
+  Future<void> loadCustomerData() async {
     try {
-      await Future.wait([loadCustomerData(), loadMeasurements()]);
+      DocumentSnapshot customerDoc =
+          await Customer.doc(widget.customerId).get();
+
+      if (customerDoc.exists) {
+        Map<String, dynamic> customerData =
+            customerDoc.data() as Map<String, dynamic>;
+
+        nameController.text = customerData['Name'] ?? '';
+        phoneController.text = customerData['Phone'] ?? '';
+        addressController.text = customerData['Address'] ?? '';
+        qameezController.text = customerData['qameezLength'] ?? '';
+        armLengthController.text = customerData['ArmLength'] ?? '';
+        cuffLengthController.text = customerData['CuffLength'] ?? '';
+        cuffWidthController.text = customerData['CuffWidth'] ?? '';
+        shoulderLengthController.text = customerData['ShoulderLength'] ?? '';
+        neckCollarLengthController.text =
+            customerData['Neck_CollarLength'] ?? '';
+        chestLengthController.text = customerData['ChestLength'] ?? '';
+        hemDamunLengthController.text = customerData['HemLength'] ?? '';
+        waistLengthController.text = customerData['WaistLength'] ?? '';
+        shalwarLengthController.text = customerData['ShalwarLength'] ?? '';
+        panchaLengthController.text = customerData['PanchaLength'] ?? '';
+        additionalInfoController.text =
+            customerData['Additional Information'] ?? '';
+
+        isFrontPocket = customerData['FrontPocket'] ?? false;
+        isStud = customerData['Stud'] ?? false;
+        isChakStrip = customerData['ChakStrip'] ?? false;
+
+        selectedGallaType = customerData['GallaType'];
+        selectedSleeveType = customerData['SleeveType'];
+        selectedSidePockets = customerData['Side Pockets'];
+        selectedHEMType = customerData['HemType'];
+      }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: 'Error loading data: $e',
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
+      Fluttertoast.showToast(msg: 'Error loading data: $e');
     } finally {
       setState(() {
         isLoading = false;
@@ -85,90 +129,53 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
     }
   }
 
-  Future<void> loadCustomerData() async {
-    DocumentSnapshot customerDoc =
-        await Customer.doc(widget.customerId).get();
+  // Future<void> loadMeasurements() async {
+  //   DocumentSnapshot customerMeasures = await Customer.doc(widget.customerId)
+  //       .collection('Measurements')
+  //       .doc("Current")
+  //       .get();
 
-    if (customerDoc.exists) {
-      Map<String, dynamic> customerData =
-          customerDoc.data() as Map<String, dynamic>;
+  //   if (customerMeasures.exists) {
+  //     Map<String, dynamic> customerData =
+  //         customerMeasures.data() as Map<String, dynamic>;
 
-      nameController.text = customerData['Name'] ?? '';
-      phoneController.text = customerData['Phone'] ?? '';
-      addressController.text = customerData['Address'] ?? '';
-    }
-  }
+  //     qameezController.text = customerData['qameezLength'] ?? '';
+  //     armLengthController.text = customerData['ArmLength'] ?? '';
+  //     cuffLengthController.text = customerData['CuffLength'] ?? '';
+  //     cuffWidthController.text = customerData['CuffWidth'] ?? '';
+  //     shoulderLengthController.text = customerData['ShoulderLength'] ?? '';
+  //     neckCollarLengthController.text = customerData['Neck/CollarLength'] ?? '';
+  //     chestLengthController.text = customerData['ChestLength'] ?? '';
+  //     hemDamunLengthController.text = customerData['HemLength'] ?? '';
+  //     waistLengthController.text = customerData['WaistLength'] ?? '';
+  //     shalwarLengthController.text = customerData['ShalwarLength'] ?? '';
+  //     panchaLengthController.text = customerData['PanchaLength'] ?? '';
+  //     additionalInfoController.text =
+  //         customerData['Additional Information'] ?? '';
 
-  Future<void> loadMeasurements() async {
-    DocumentSnapshot customerMeasures = await Customer.doc(widget.customerId)
-        .collection('Measurements')
-        .doc('Current')
-        .get();
+  //     isFrontPocket = customerData['FrontPocket'] ?? false;
+  //     isStud = customerData['Stud'] ?? false;
+  //     isChakStrip = customerData['ChakStrip'] ?? false;
 
-    if (customerMeasures.exists) {
-      Map<String, dynamic> customerData =
-          customerMeasures.data() as Map<String, dynamic>;
+  //     selectedGallaType = customerData['GallaType'];
+  //     selectedSleeveType = customerData['SleeveType'];
+  //     selectedSidePockets = customerData['Side Pockets'];
+  //     selectedHEMType = customerData['HemType'];
+  //   }
+  // }
 
-      qameezController.text = customerData['qameezLength'] ?? '';
-      armLengthController.text = customerData['ArmLength'] ?? '';
-      cuffLengthController.text = customerData['CuffLength'] ?? '';
-      cuffWidthController.text = customerData['CuffWidth'] ?? '';
-      shoulderLengthController.text = customerData['ShoulderLength'] ?? '';
-      neckCollarLengthController.text =
-          customerData['Neck/CollarLength'] ?? '';
-      chestLengthController.text = customerData['ChestLength'] ?? '';
-      hemDamunLengthController.text = customerData['HemLength'] ?? '';
-      waistLengthController.text = customerData['WaistLength'] ?? '';
-      shalwarLengthController.text = customerData['ShalwarLength'] ?? '';
-      panchaLengthController.text = customerData['PanchaLength'] ?? '';
-      additionalInfoController.text =
-          customerData['Additional Information'] ?? '';
-
-      isFrontPocket = customerData['FrontPocket'] ?? false;
-      isStud = customerData['Stud'] ?? false;
-      isChakStrip = customerData['ChakStrip'] ?? false;
-
-      selectedGallaType = customerData['GallaType'];
-      selectedSleeveType = customerData['SleeveType'];
-      selectedSidePockets = customerData['Side Pockets'];
-      selectedHEMType = customerData['HemType'];
-    }
-  }
-
-Future<String> addUser() async {
-  final phone = phoneController.text.trim();
-  final docRef = Customer.doc(); // 👈 generate ID locally, works offline
-  await docRef.set({
-    'Name': nameController.text.trim(),
-    'Phone': phone,
-    'Address': addressController.text.trim(),
-    'createdAt': FieldValue.serverTimestamp(),
-  });
-  return docRef.id;
-}
-
-
-  Future<void> updateUser() async {
+  Future<void> addUser() async {
     final phone = phoneController.text.trim();
-    await Customer.doc(widget.customerId).update({
+    await Customer.add({
       'Name': nameController.text.trim(),
       'Phone': phone,
       'Address': addressController.text.trim(),
-    });
-  }
-
-  Future<void> saveMeasurements(String customerId) async {
-    final measurementsRef = Customer
-        .doc(customerId)
-        .collection('Measurements')
-        .doc('Current');
-    await measurementsRef.set({
       'qameezLength': qameezController.text.trim(),
       'ArmLength': armLengthController.text.trim(),
       'CuffLength': cuffLengthController.text.trim(),
       'CuffWidth': cuffWidthController.text.trim(),
       'ShoulderLength': shoulderLengthController.text.trim(),
-      'Neck/CollarLength': neckCollarLengthController.text.trim(),
+      'Neck_CollarLength': neckCollarLengthController.text.trim(),
       'ChestLength': chestLengthController.text.trim(),
       'HemLength': hemDamunLengthController.text.trim(),
       'WaistLength': waistLengthController.text.trim(),
@@ -182,9 +189,112 @@ Future<String> addUser() async {
       'Side Pockets': selectedSidePockets,
       'HemType': selectedHEMType,
       'Additional Information': additionalInfoController.text.trim(),
-      'updatedAt': FieldValue.serverTimestamp(),
-    }, SetOptions(merge: true));
+      'createdAt': DateTime.now(),
+    });
+    // return docRef.id;
   }
+
+  Future<void> updateUser() async {
+    final phone = phoneController.text.trim();
+    await Customer.doc(widget.customerId).update({
+      'Name': nameController.text.trim(),
+      'Phone': phone,
+      'Address': addressController.text.trim(),
+      'qameezLength': qameezController.text.trim(),
+      'ArmLength': armLengthController.text.trim(),
+      'CuffLength': cuffLengthController.text.trim(),
+      'CuffWidth': cuffWidthController.text.trim(),
+      'ShoulderLength': shoulderLengthController.text.trim(),
+      'Neck_CollarLength': neckCollarLengthController.text.trim(),
+      'ChestLength': chestLengthController.text.trim(),
+      'HemLength': hemDamunLengthController.text.trim(),
+      'WaistLength': waistLengthController.text.trim(),
+      'ShalwarLength': shalwarLengthController.text.trim(),
+      'PanchaLength': panchaLengthController.text.trim(),
+      'FrontPocket': isFrontPocket,
+      'Stud': isStud,
+      'ChakStrip': isChakStrip,
+      'GallaType': selectedGallaType,
+      'SleeveType': selectedSleeveType,
+      'Side Pockets': selectedSidePockets,
+      'HemType': selectedHEMType,
+      'Additional Information': additionalInfoController.text.trim(),
+      'UpdatedAt': DateTime.now(),
+    });
+  }
+
+  // Future<void> updateMeasurements() async {
+  //   final measurementsRef = await FirebaseFirestore.instance
+  //       .collection('Customer')
+  //       .doc(widget.customerId)
+  //       .collection('Measurements').doc("Current")
+  //       .get();
+  //   var Mid;
+  //   for (var docid in measurementsRef.docs) {
+  //     Mid = docid;
+  //   }
+  //   await FirebaseFirestore.instance
+  //       .collection('Customer')
+  //       .doc(widget.customerId)
+  //       .collection('Measurements')
+  //       .doc(Mid)
+  //       .update(
+  //     {
+  //       'qameezLength': qameezController.text.trim(),
+  //       'ArmLength': armLengthController.text.trim(),
+  //       'CuffLength': cuffLengthController.text.trim(),
+  //       'CuffWidth': cuffWidthController.text.trim(),
+  //       'ShoulderLength': shoulderLengthController.text.trim(),
+  //       'Neck/CollarLength': neckCollarLengthController.text.trim(),
+  //       'ChestLength': chestLengthController.text.trim(),
+  //       'HemLength': hemDamunLengthController.text.trim(),
+  //       'WaistLength': waistLengthController.text.trim(),
+  //       'ShalwarLength': shalwarLengthController.text.trim(),
+  //       'PanchaLength': panchaLengthController.text.trim(),
+  //       'FrontPocket': isFrontPocket,
+  //       'Stud': isStud,
+  //       'ChakStrip': isChakStrip,
+  //       'GallaType': selectedGallaType,
+  //       'SleeveType': selectedSleeveType,
+  //       'Side Pockets': selectedSidePockets,
+  //       'HemType': selectedHEMType,
+  //       'Additional Information': additionalInfoController.text.trim(),
+  //       'updatedAt': FieldValue.serverTimestamp(),
+  //     },
+  //   );
+  // }
+
+  // Future<void> saveMeasurements() async {
+  //   final measurementsRef = FirebaseFirestore.instance
+  //       .collection("Customer")
+  //       .doc(widget.customerId)
+  //       .collection("Measurements")
+  //       .doc("Current");
+  //   await measurementsRef.set(
+  //     {
+  //       'qameezLength': qameezController.text.trim(),
+  //       'ArmLength': armLengthController.text.trim(),
+  //       'CuffLength': cuffLengthController.text.trim(),
+  //       'CuffWidth': cuffWidthController.text.trim(),
+  //       'ShoulderLength': shoulderLengthController.text.trim(),
+  //       'Neck/CollarLength': neckCollarLengthController.text.trim(),
+  //       'ChestLength': chestLengthController.text.trim(),
+  //       'HemLength': hemDamunLengthController.text.trim(),
+  //       'WaistLength': waistLengthController.text.trim(),
+  //       'ShalwarLength': shalwarLengthController.text.trim(),
+  //       'PanchaLength': panchaLengthController.text.trim(),
+  //       'FrontPocket': isFrontPocket,
+  //       'Stud': isStud,
+  //       'ChakStrip': isChakStrip,
+  //       'GallaType': selectedGallaType,
+  //       'SleeveType': selectedSleeveType,
+  //       'Side Pockets': selectedSidePockets,
+  //       'HemType': selectedHEMType,
+  //       'Additional Information': additionalInfoController.text.trim(),
+  //       'updatedAt': FieldValue.serverTimestamp(),
+  //     },
+  //   );
+  // }
 
   @override
   void dispose() {
@@ -489,7 +599,6 @@ Future<String> addUser() async {
                                     ),
                                     Text('Chak Strip'),
                                   ])),
-
                               Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -659,45 +768,59 @@ Future<String> addUser() async {
                               ),
                             ),
                           ),
-
                           SizedBox(height: 30),
                           ElevatedButton(
                             onPressed: () async {
-                              if (formKey.currentState!.validate()) {
-                                try {
-                                  if (isEditMode) {
-                                     Navigator.pop(context);
-                                    await updateUser();
-                                    await saveMeasurements(widget.customerId!);
-                                    Fluttertoast.showToast(
-                                        msg: 'Customer Updated Successfully',
-                                        toastLength: Toast.LENGTH_SHORT,
-                                        gravity: ToastGravity.BOTTOM,
-                                        textColor: Colors.white,
-                                        backgroundColor: Colors.blueGrey);
-                                  } else {
-                                     Navigator.pop(context);
-                                    final newCustomerId = await addUser();
-                                    await saveMeasurements(newCustomerId);
-                                    Fluttertoast.showToast(
-                                        msg: 'Customer Added',
-                                        toastLength: Toast.LENGTH_SHORT,
-                                        gravity: ToastGravity.BOTTOM,
-                                        textColor: Colors.white,
-                                        backgroundColor: Colors.blueGrey);
-                                  }
-                                  Navigator.pop(context);
-                                } catch (e) {
-                                  print('Save/Update Error: $e'); // For debugging
-                                  Fluttertoast.showToast(
-                                      msg: 'Error: $e',
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.BOTTOM,
-                                      textColor: Colors.white,
-                                      backgroundColor: Colors.red);
-                                }
-                              }
-                            },
+  // Check if form state exists before trying to validate
+  final currentState = formKey.currentState;
+  if (currentState == null) {
+    Fluttertoast.showToast(
+      msg: 'Form not ready. Please try again.',
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      textColor: Colors.white,
+      backgroundColor: Colors.red,
+    );
+    return;
+  }
+  
+  // Now validate the form
+  if (currentState.validate()) {
+    try {
+      if (isEditMode) {
+          Navigator.pop(context);
+        await updateUser();
+        Fluttertoast.showToast(
+          msg: 'Customer Updated Successfully',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          textColor: Colors.white,
+          backgroundColor: Colors.blueGrey,
+        );
+      } else {
+          Navigator.pop(context);
+        await addUser();
+        Fluttertoast.showToast(
+          msg: 'Customer Added',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          textColor: Colors.white,
+          backgroundColor: Colors.blueGrey,
+        );
+      }
+      Navigator.pop(context);
+    } catch (e) {
+      print('Save/Update Error: $e');
+      // Fluttertoast.showToast(
+      //   msg: 'Error: $e',
+      //   toastLength: Toast.LENGTH_SHORT,
+      //   gravity: ToastGravity.BOTTOM,
+      //   textColor: Colors.white,
+      //   backgroundColor: Colors.red,
+      // );
+    }
+  }
+},
                             child: Text(isEditMode ? 'Update' : 'Save'),
                             style: TextButton.styleFrom(
                                 foregroundColor: Colors.white,

@@ -14,7 +14,7 @@ class Viewcustomers extends StatefulWidget {
 class _ViewcustomersState extends State<Viewcustomers> {
   final CollectionReference customerRef =
       FirebaseFirestore.instance.collection('Customer');
-  
+
   bool isSearching = false;
   TextEditingController searchController = TextEditingController();
   String searchQuery = '';
@@ -83,14 +83,14 @@ class _ViewcustomersState extends State<Viewcustomers> {
           if (customers.isEmpty) {
             return Center(child: Text("No customers found"));
           }
-          
+
           // Filter customers based on search query
           final filteredCustomers = customers.where((customer) {
             if (searchQuery.isEmpty) return true;
-            
+
             final name = customer['Name'].toString().toLowerCase();
             final phone = customer['Phone'].toString().toLowerCase();
-            
+
             return name.contains(searchQuery) || phone.contains(searchQuery);
           }).toList();
 
@@ -100,7 +100,8 @@ class _ViewcustomersState extends State<Viewcustomers> {
               .compareTo(b['Name'].toString().toLowerCase()));
 
           if (filteredCustomers.isEmpty) {
-            return Center(child: Text("No customers found matching '$searchQuery'"));
+            return Center(
+                child: Text("No customers found matching '$searchQuery'"));
           }
 
           return ListView.builder(
@@ -125,7 +126,7 @@ class _ViewcustomersState extends State<Viewcustomers> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              name,
+                              "$name",
                               style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -143,7 +144,7 @@ class _ViewcustomersState extends State<Viewcustomers> {
                                           MaterialPageRoute(
                                             builder: (context) =>
                                                 AddNewCustomer(
-                                              customerId: customer.id, 
+                                              customerId: customer.id,
                                             ),
                                           ),
                                         );
