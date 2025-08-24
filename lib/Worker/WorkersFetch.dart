@@ -94,7 +94,7 @@ class FetchWorkersState extends State<FetchWorkers> {
                                         builder: (context) {
                                           return AlertDialog(
                                             title: Text('Delete Worker'),
-                                            content: Text('All the data belongs to ${WorkersData['name']}'),
+                                            content: Text('All the data belongs to ${WorkersData['name']} will be deleted'),
                                             
                                             actions: [ Row(
                                               mainAxisAlignment:

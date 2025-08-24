@@ -21,8 +21,10 @@ class ToDoListState extends State<ToDoList> {
   String? FormattedTime;
   bool isFinish = false;
   bool showFinishedTask = false;
+
   // Show date picker
   void showDateTime() async {
+    FocusScope.of(context).requestFocus(FocusNode());
     DateTime? datePicker = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -46,6 +48,7 @@ class ToDoListState extends State<ToDoList> {
 
   // Show time picker
   void TimePicker() async {
+    FocusScope.of(context).requestFocus(FocusNode());
     TimeOfDay? timePicker = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
@@ -103,19 +106,22 @@ class ToDoListState extends State<ToDoList> {
       'Time': FormattedTime, // nullable is OK
       'Finish': isFinish,
     });
+  }
 
-    // Clear fields
-    TaskController.clear();
-    DescriptionController.clear();
+  @override
+  void dispose() {
+    TaskController.dispose();
+    DescriptionController.dispose();
     FormattedDate = null;
     FormattedTime = null;
     SelectedDate = null;
     SelectedTime = null;
+    super.dispose();
   }
 
   void showBottomSheet() {
     showModalBottomSheet(
-      backgroundColor: Colors.lightBlue,
+      backgroundColor: Colors.blueGrey,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
       barrierColor: Colors.white,
       context: context,
@@ -130,7 +136,11 @@ class ToDoListState extends State<ToDoList> {
               SizedBox(
                 height: 30,
               ),
-              builtTextField('Task Name', TaskController, 1),
+              builtTextField(
+                'Task Name',
+                TaskController,
+                1,
+              ),
               SizedBox(height: 10),
               builtTextField('Description', DescriptionController, 2),
               SizedBox(height: 10),
@@ -147,8 +157,16 @@ class ToDoListState extends State<ToDoList> {
                   ),
                   TextButton(
                     onPressed: () {
+                      FocusScope.of(context).unfocus();
                       storeData();
                       Navigator.pop(context);
+                      // Clear fields
+                      TaskController.clear();
+                      DescriptionController.clear();
+                      FormattedDate = null;
+                      FormattedTime = null;
+                      SelectedDate = null;
+                      SelectedTime = null;
                     },
                     child: Text('Save', style: TextStyle(color: Colors.white)),
                   ),
@@ -194,7 +212,7 @@ class ToDoListState extends State<ToDoList> {
                 });
               },
               child: Text(
-                showFinishedTask ? 'All' : 'Finished',
+                showFinishedTask ? 'UnFinished Tasks' : 'Finished Tasks',
                 style: TextStyle(color: Colors.white),
               ))
         ],
@@ -244,7 +262,9 @@ class ToDoListState extends State<ToDoList> {
                         Text(
                           '$TaskName',
                           style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18),
                         ),
                         Text(
                           '$TaskDescription',
@@ -289,8 +309,7 @@ class ToDoListState extends State<ToDoList> {
                                         textColor: Colors.white);
                                   }
                                 },
-                                child: Text(
-                                  'Finish',
+                                child: Text( showFinishedTask ? 'This Task is Finished' : 'Finish',
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold),
@@ -333,7 +352,7 @@ class ToDoListState extends State<ToDoList> {
       floatingActionButton: FloatingActionButton(
         onPressed: showBottomSheet,
         child: Icon(Icons.add, size: 30),
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: Colors.blueGrey,
         foregroundColor: Colors.white,
       ),
     );

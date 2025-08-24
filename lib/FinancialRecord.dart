@@ -35,7 +35,6 @@ class _FinancialrecordState extends State<Financialrecord> {
     _loadFinancialData();
   }
 
-  // FIXED: Better date range logic
   bool _isOrderInSelectedPeriod(DateTime orderDate) {
     DateTime now = DateTime.now();
     DateTime today = DateTime(now.year, now.month, now.day);

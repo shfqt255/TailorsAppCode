@@ -10,6 +10,8 @@
 analyzer:
   errors:
     non_constant_identifier_names: ignore
+    must_be_immutable: ignore
+    unnecessary_cast: ignore
 # analyzer:
 #   errors:
 #     non_constant_identifier_names: ignore

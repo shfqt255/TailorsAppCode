@@ -525,7 +525,7 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
                                 child: buildSimpleTexfield(
                                   "Shalwar Length",
                                   shalwarLengthController,
-                                  TextInputType.number,
+                                  TextInputType.number
                                 ),
                               ),
                               SizedBox(
