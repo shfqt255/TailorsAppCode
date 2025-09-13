@@ -1,0 +1,52 @@
+plugins {
+    id "com.android.application"
+    // START: FlutterFire Configuration
+    id 'com.google.gms.google-services'
+    // END: FlutterFire Configuration
+    id "kotlin-android"
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+android {
+    namespace 'com.example.tailors_application'  // ✅ Use single quotes, not =
+
+    compileSdkVersion flutter.compileSdkVersion  // ✅ Correct syntax
+    ndkVersion flutter.ndkVersion
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    defaultConfig {
+        applicationId "com.example.tailors_application"
+        minSdkVersion= 24     // ✅ Correct syntax
+        targetSdkVersion= flutter.targetSdkVersion
+        versionCode= flutter.versionCode
+        versionName= flutter.versionName
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("C:\\Users\\Shfqt Pc\\.android\\debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.debug  // ✅ Use Groovy-style assignment (no `=`)
+        }
+    }
+}
+
+flutter {
+    source = "../.."
+}

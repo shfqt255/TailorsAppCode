@@ -1,0 +1,2 @@
+E:/TailorsApp Code/tailors_application/android/app/.cxx/Debug/4h4v1o67/x86_64/CMakeFiles/edit_cache.dir
+E:/TailorsApp Code/tailors_application/android/app/.cxx/Debug/4h4v1o67/x86_64/CMakeFiles/rebuild_cache.dir

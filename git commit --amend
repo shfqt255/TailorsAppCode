@@ -1,0 +1,23 @@
+[33mcommit 5622753f87ba9ff80ff459c606458594199f27fe[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: shfqt255 <shfqt25@gmail.com>
+Date:   Wed Sep 10 18:28:00 2025 +0500
+
+    change directory structure
+
+[33mcommit b847caf2c358019737075721caf06744ce1bd33a[m
+Author: shfqt255 <shfqt25@gmail.com>
+Date:   Sun Aug 24 15:10:07 2025 +0500
+
+    Icon changed and some code in TodoList and orderDetails
+
+[33mcommit 50a7e9cd7b528bca46b7730575cf42deceeec9a1[m
+Author: shfqt255 <shfqt25@gmail.com>
+Date:   Thu Aug 21 21:04:38 2025 +0500
+
+    Measurements added at collectio Customer
+
+[33mcommit 2f0827c63c5f7b472a6c0ebc27bfabf21ecb534b[m
+Author: shfqt255 <shfqt25@gmail.com>
+Date:   Wed Aug 20 14:54:33 2025 +0500
+
+    Initial commit of Tailors_application project
